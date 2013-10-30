@@ -50,3 +50,5 @@ echo $chart->renderInit();
 </script> 
 
 ```
+
+####Only completed 'Colunm' charts, welcome to Fork! (*^__^*) 
