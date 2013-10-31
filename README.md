@@ -1,4 +1,4 @@
-charts_download
+chartsQ
 ===============
 
 quickly create a chart (php to js) and support for export for FusionCharts;
