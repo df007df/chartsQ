@@ -10,6 +10,11 @@ abstract class baseChart
     protected $_is3D = true;
     
     protected $_pendingData = array();//待处理数据
+    
+    
+    private $_trendLinesData = array();
+    
+    
     /**
      * 每个图形 唯一的配置数据回调方法
      * @var type
@@ -23,7 +28,7 @@ abstract class baseChart
     public $insertChartsAttr = array(
         'dataFormat' => 'json', 
         'width' => '60%',
-        'height' => '60%'
+        'height' => '90%'
     );
 
 
@@ -79,9 +84,25 @@ abstract class baseChart
     public function set3D($bool = true)
     {
         $this->_is3D = $bool;
-    }       
+    }   
     
     
+    public function loadStyle($style = '')
+    {   
+     
+        $styleClass = str_replace('Chart', '', get_class($this))
+            . 'Style';
+   
+        $styleObj = new $styleClass();
+        if (method_exists($styleObj, $style)) {
+            $styleObj->$style($this);
+        }
+        
+    }
+
+
+
+
     public function getType() 
     { 
         
@@ -118,7 +139,7 @@ abstract class baseChart
         return $exts;
     }        
 
-
+    
     
 
     /**
@@ -181,7 +202,36 @@ INSTER;
         return $html;
       
     }
-
+    
+    
+    
+    /*特性类型属性方法*/
+    
+    public function f_trendLines($val, $title, $color = '009933')
+    {
+        $this->_trendLinesData[] = array(
+            'startValue' => $val, 
+            'displayvalue' => $title, 
+            'color' => $color
+        );
+        
+    }
+    
+    
+    public function get_trendLines($val, $title, $color = '009933')
+    { 
+        if (empty($this->_trendLinesData))
+            return array();
+        
+        return array('trendlines' => array(
+            'line' => $this->_trendLinesData
+        ));
+    }
+    
+    
+    
+    
+    
 
     public function set_caption($val)
     {
@@ -194,12 +244,37 @@ INSTER;
     }
     
     
-    
+    public function __call($name, $arg = array())
+    {   
+        $preg = "/^set_(.*)/is";
+        if (preg_match($preg, $name, $get) &&
+            isset($arg[0]) &&
+            !empty($get[1])    
+        ) {
+
+            $this->$get[1] = $arg[0];
+        }
+     
+    }
+
+
+
+
+
+
     public static function auto_load($class) 
     {   
         
-        $f = str_replace('Chart', '', $class);
-        include_once dirname(__FILE__) . '/' . $f . '.php';
+        if (preg_match("/Chart$/is", $class)) {
+            $f = str_replace('Chart', '', $class);
+            include_once dirname(__FILE__) . '/' . strtolower($f) . '.php';   
+        } 
+        
+        if (preg_match("/Style$/is", $class)) {
+            $f = str_replace('Style', '', $class);
+            include_once dirname(__FILE__) . '/stylemodule/' . strtolower($f) . '.php';   
+        }
+  
     }
     
 }

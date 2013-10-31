@@ -6,7 +6,7 @@ class columnChart extends baseChart
     protected $_typeId = 'Column';
     
     
-    private $_trendLinesData = array();
+    
             
     function __construct() {
         parent::__construct();
@@ -43,26 +43,7 @@ class columnChart extends baseChart
     
     
     
-    public function f_trendLines($val, $title, $color = '009933')
-    {
-        $this->_trendLinesData[] = array(
-            'startValue' => $val, 
-            'displayvalue' => $title, 
-            'color' => $color
-        );
-        
-    }
     
-    
-    public function get_trendLines($val, $title, $color = '009933')
-    { 
-        if (empty($this->_trendLinesData))
-            return array();
-        
-        return array('trendlines' => array(
-            'line' => $this->_trendLinesData
-        ));
-    }
             
     
     

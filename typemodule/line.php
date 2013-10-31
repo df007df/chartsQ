@@ -1,8 +1,21 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+class LineChart extends baseChart
+{
+    
+    protected $_typeId = 'Line';
+    
+    public $extendsDataAction = array('get_trendLines');
+    
+            
+    function __construct() {
+        parent::__construct();
+        $this->set3D(false);
+    }
+    
+    public function getType() 
+    { 
+        return $this->_typeId;  
+    }
+}
 
