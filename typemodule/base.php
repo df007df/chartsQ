@@ -14,7 +14,8 @@ abstract class baseChart
     
     private $_trendLinesData = array();
     
-    
+    private $_chartId = '';
+
     /**
      * 每个图形 唯一的配置数据回调方法
      * @var type
@@ -54,9 +55,17 @@ abstract class baseChart
      * 获取前端渲染唯一id
      * @return type
      */
-    protected function getChartId()
+    public function getChartId()
+    {   
+        if (empty($this->_chartId)) {
+            $this->_chartId = 'chart_' . substr(md5(time()), 3, 8 );
+        }
+        return $this->_chartId;
+    }
+    
+    public function getChartIdDiv() 
     {
-        return 'chart_' . substr(md5(time()), 3, 8 );
+        return $this->getChartId() . '_div';
     }
 
 
@@ -171,7 +180,7 @@ abstract class baseChart
     public function renderInit()
     {
         $chartId = $this->getChartId();
-        $chartIdDiv = $chartId . '_div';
+        $chartIdDiv = $this->getChartIdDiv();
         $type = $this->getType();
         
         $insterAttr = array();
