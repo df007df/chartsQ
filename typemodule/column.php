@@ -40,6 +40,16 @@ class columnChart extends baseChart
         $this->showValues = $val;
     }
     
+    public function set_categories($val)
+    {
+        $this->categories = $val;
+    }
+    
+    
+    public function set_dataset($val)
+    {
+        $this->dataset = $val;
+    }
     
     
     

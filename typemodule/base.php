@@ -15,6 +15,8 @@ abstract class baseChart
     private $_trendLinesData = array();
     
     private $_chartId = '';
+    
+    private $_extAttr = array();
 
     /**
      * 每个图形 唯一的配置数据回调方法
@@ -34,6 +36,17 @@ abstract class baseChart
 
 
     private static $_typeobj = array();
+    
+    
+    private function set_ext($attr, $val)
+    {
+        $this->_extAttr[$attr] = $val;
+    }
+    
+    private function get_ext()
+    {
+        return $this->_extAttr;
+    }
             
     function __construct() {
         ;
@@ -58,14 +71,15 @@ abstract class baseChart
     public function getChartId()
     {   
         if (empty($this->_chartId)) {
-            $this->_chartId = 'chart_' . substr(md5(time()), 3, 8 );
+            $this->_chartId = 'chart_' . substr(md5(rand(1,9999)), 3, 8);
         }
+        return $this->_chartId = 'chart_' . substr(md5(rand(1,9999)), 3, 8);
         return $this->_chartId;
     }
     
-    public function getChartIdDiv() 
+    public function getChartIdDiv($id = '') 
     {
-        return $this->getChartId() . '_div';
+        return (empty($id) ? $this->getChartId() : $id) . '_div';
     }
 
 
@@ -169,7 +183,12 @@ abstract class baseChart
     {
         $attr = $this->getAttr();
         $data = $this->getData();
-        return array_merge($attr, array('data' => $data));
+        
+        $extAttr = $this->get_ext();
+        return array_merge($attr, 
+            empty($data) ? array() : array('data' => $data),
+            $extAttr    
+        );
     } 
 
 
@@ -180,7 +199,7 @@ abstract class baseChart
     public function renderInit()
     {
         $chartId = $this->getChartId();
-        $chartIdDiv = $this->getChartIdDiv();
+        $chartIdDiv = $this->getChartIdDiv($chartId);
         $type = $this->getType();
         
         $insterAttr = array();
@@ -201,9 +220,8 @@ abstract class baseChart
         $("#{$chartIdDiv}").insertFusionCharts({
                {$params},
                {$insterAttr},
-               dataSource: {$dataSource}
-    
-         });
+               dataSource: {$dataSource}  
+        });
          </script>    
                     
 INSTER;
@@ -241,6 +259,7 @@ INSTER;
     
     
     
+    
 
     public function set_caption($val)
     {
@@ -262,6 +281,15 @@ INSTER;
         ) {
 
             $this->$get[1] = $arg[0];
+        }
+        
+        $preg = "/^ext_(.*)/is";
+        if (preg_match($preg, $name, $get) &&
+            isset($arg[0]) &&
+            !empty($get[1])    
+        ) {
+
+            $this->set_ext($get[1], $arg[0]);
         }
      
     }
