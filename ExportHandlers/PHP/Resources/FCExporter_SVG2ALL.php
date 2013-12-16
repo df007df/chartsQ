@@ -134,8 +134,8 @@ define( "MIMETYPES", "jpg=image/jpeg;jpeg=image/jpeg;gif=image/gif;png=image/png
 // Each key is the format and value is the file extension
 define( "EXTENSIONS", "jpg=jpg;jpeg=jpg;gif=gif;png=png;pdf=pdf;svg=svg" );
 
-define ('TEMP_PATH', dirname(__FILE__) . '/batik/temp/');
-define ('BATIK_PATH', dirname(__FILE__) . '/batik/batik-rasterizer.jar');
+define ('TEMP_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'batik' . DIRECTORY_SEPARATOR . 'temp'. DIRECTORY_SEPARATOR);
+define ('BATIK_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'batik' .DIRECTORY_SEPARATOR . 'batik-rasterizer.jar');
 
 // =============================================================================
 // ==                             Public Functions                            ==
@@ -189,7 +189,7 @@ function exportProcessor( $stream , $meta, $exportParams )
 
             // do the conversion
             $command = "java -jar ". BATIK_PATH ." -m $mimeType $width $bg $tempInputSVGFile";
-            echo $command;
+            //echo $command;
             $output = shell_exec( $command );
 
             // catch error

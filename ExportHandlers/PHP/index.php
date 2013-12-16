@@ -152,7 +152,7 @@
  *
  * 	For Windows servers you can ALSO use \\ as path separator too. e.g. c:\\php\\mysite\\
  */
-define("SAVE_PATH", "../../ExportedImages/");
+//define("SAVE_PATH", "../../ExportedImages/");
 
 /**
  * 	IMPORTANT: This constant HTTP_URI stores the HTTP reference to
@@ -160,7 +160,7 @@ define("SAVE_PATH", "../../ExportedImages/");
  * 			   Please enter the HTTP representation of that folder
  * 			   in this constant e.g., http://www.yourdomain.com/images/
  */
-define("HTTP_URI", "http://localhost/charts_download/ExportedImages");
+//define("HTTP_URI", "http://localhost/charts_download/ExportedImages");
 
 // ==============================================================================
 //   Users are recommended NOT to perform any editing beyond this point.       ==
@@ -225,8 +225,13 @@ $notices = "";
  * and 'parameters' ( array of all export parameters from chart as keys, like - exportFormat,
  * exportFileName, exportAction etc.)
  */
-$exportRequestStream = $_POST;
-$exportData = parseExportRequestStream($exportRequestStream);
+
+function export($exportRequestStream)
+{
+    global $notices;
+    $notices = '';
+
+    $exportData = parseExportRequestStream($exportRequestStream);
 
 /**
  * Get the name of the export resource (php file) as per export format
@@ -234,18 +239,18 @@ $exportData = parseExportRequestStream($exportRequestStream);
  * and perform all export related tasks
  */
 $exporterResource = getExporter($exportData ['parameters'] ["exportformat"], $exportData ["streamtype"]);
-
-
-// if resource is not found terminate with error report
-if (!@include( $exporterResource )) {
-    raise_error(404, true);
-}
+include_once( $exporterResource );
 
 /*
  * Pass export stream and meta values to the export processor &
  * get back the export binary
  */
-$exportObject = exportProcessor($exportData ['stream'], $exportData ['meta'], $exportData ['parameters']);
+return exportProcessor($exportData ['stream'], $exportData ['meta'], $exportData ['parameters']);
+}
+
+
+
+
 
 
 /*
@@ -253,7 +258,7 @@ $exportObject = exportProcessor($exportData ['stream'], $exportData ['meta'], $e
  * or send the export file to download. Download terminates the process while
  * after save the output module sends back export status
  */
-$exportedStatus = outputExportObject($exportObject, $exportData ['parameters']);
+//$exportedStatus = outputExportObject($exportObject, $exportData ['parameters']);
 
 
 
@@ -262,7 +267,7 @@ $exportedStatus = outputExportObject($exportObject, $exportData ['parameters']);
  * procesed status to http response. This returns status back to chart.
  * [ This is not applicable when Download action took place ]
  */
-flushStatus($exportedStatus, $exportData ['meta']);
+//flushStatus($exportedStatus, $exportData ['meta']);
 
 
 // =============================================================================
@@ -283,7 +288,7 @@ flushStatus($exportedStatus, $exportData ['meta']);
  *  @return	An array of processed export data and parameters
  */
 function parseExportRequestStream($exportRequestStream) {
-
+    global $notices;
     // Check for SVG
     $exportData ['streamtype'] = strtoupper(@$exportRequestStream ['stream_type']);
     // backward compatible SVG stream type detection
